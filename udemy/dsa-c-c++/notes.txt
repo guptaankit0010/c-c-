@@ -1,0 +1,42 @@
+--- ARRAYS ---
+- Arrays are contiguous blocks of memory for elements of the same type.
+- Size of array: sizeof(arr) gives total bytes (e.g., int arr[5] is usually 20 bytes).
+- Partial initialization: int arr1[5] = {1}; sets first element, rest are zero.
+- Variable-length arrays (int arr2[n];) are allowed in C99, not standard C++.
+- Range-based for loops require C++11 or later.
+
+--- STRUCTS & PADDING ---
+- Structs group related variables under one name.
+- Compiler adds padding for alignment, making struct size larger than sum of members.
+- Example: struct Rectangle { int length; int breadth; char title; }; may be 12 bytes due to padding.
+- Use sizeof() to check actual struct size.
+- Structs can be initialized globally or locally.
+- Arrays of structs can be created and iterated for operations like area calculation.
+
+--- POINTERS ---
+- Pointers store memory addresses and are used for dynamic memory allocation (heap).
+- Pointer variables themselves are stored in stack memory.
+- Use malloc for dynamic allocation in C, and new in C++.
+- Example: int *q = (int *)malloc(5 * sizeof(int)); allocates space for 5 ints.
+- Always free heap memory: free(q); (C) or delete[] r; (C++).
+- Array names can be used as pointers to their first element.
+- Pointer size depends on architecture (commonly 8 bytes on 64-bit systems).
+- Printing addresses: use %p in printf and cast to (void*).
+
+--- POINTERS TO STRUCTS ---
+- You can create pointers to structs: struct Rectangle *p;
+- Use -> to access members via pointer: p->length.
+- Can dynamically allocate structs: struct Rectangle *r2 = (struct Rectangle *)malloc(sizeof(struct Rectangle));
+- Always free dynamically allocated structs: free(r2);
+
+--- REFERENCES ---
+- References are aliases for existing variables.
+- Must be initialized when declared and cannot be changed to refer to another variable.
+- Do not occupy memory; just another name for the variable.
+- Not pointers: cannot be null, do not require dereferencing.
+- Changing the reference changes the original variable.
+
+--- GENERAL NOTES ---
+- Always match memory allocation and deallocation methods (malloc/free, new/delete).
+- Use correct format specifiers for printing pointers and values.
+- Member order in structs affects padding and total size.

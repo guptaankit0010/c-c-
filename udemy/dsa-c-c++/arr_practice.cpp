@@ -30,6 +30,12 @@ int main()
         int breadth;
     };
 
+    // Above definition does not allocate memory for the struct Rectangle.
+    // It only defines the structure of the Rectangle.
+    // To allocate memory for the struct Rectangle, we need to create an instance of it.
+    // Below line creates an instance of the struct Rectangle and allocates memory for it.
+    // The size of the struct Rectangle will be the sum of the sizes of its members.
+
     struct Rectangle r1;
 
     cout << "sizeof(r1): " << sizeof(r1) << endl; // This will print the size of the struct Rectangle
