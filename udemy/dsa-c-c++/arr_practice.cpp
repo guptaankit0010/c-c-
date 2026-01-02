@@ -37,21 +37,23 @@ int main()
     // The size of the struct Rectangle will be the sum of the sizes of its members.
 
     struct Rectangle r1;
+    int *ptrToR1length;
+    ptrToR1length = &r1.length;
 
-    cout << "sizeof(r1): " << sizeof(r1) << endl; // This will print the size of the struct Rectangle
-    cout << &r1 << endl;                          // This will print the address of the struct Rectangle
-    cout << &r1.length << endl;                   // This will print the address of the struct Rectangle
-    cout << &r1.breadth << endl;                  // This will print the address of the struct Rectangle
-    cout << "r1.length: " << r1.length << endl;   // This will print the default value of length, which is 0
-    cout << "r1.breadth: " << r1.breadth << endl; // This will print the default value of breadth, which is 0
+    cout << "Address of ptrToR1length: " << ptrToR1length << endl; // This will print the address of the length member
+    cout << "sizeof(r1): " << sizeof(r1) << endl;                  // This will print the size of the struct Rectangle
+    cout << "Address of r1: " << &r1 << endl;                      // This will print the address of the struct Rectangle
+    cout << "Address of r1.length: " << &r1.length << endl;        // This will print the address of the struct Rectangle
+    cout << "Address of r1.breadth: " << &r1.breadth << endl;      // This will print the address of the struct Rectangle
+    cout << "r1.length: " << r1.length << endl;                    // This will print the default value of length, which is 0
+    cout << "r1.breadth: " << r1.breadth << endl;                  // This will print the default value of breadth, which is 0
 
     struct Rectangle r2[5] = {
         {1, 2},
         {3, 4},
         {5, 6},
         {7, 8},
-        {9, 10}
-    };
+        {9, 10}};
 
     for (size_t i = 0; i < sizeof(r2) / sizeof(r2[0]); i++)
     {

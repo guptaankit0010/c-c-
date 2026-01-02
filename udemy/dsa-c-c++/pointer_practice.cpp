@@ -20,17 +20,23 @@ int main()
     cout << "Address of a: " << &a << endl;               // Prints address of a
     cout << "Value at pointer p: " << *p << endl;         // Dereferences p to get value of a, prints 10
     cout << "Address stored in pointer p: " << p << endl; // Prints address of a
-
-    *p = 20;                                 // Changes value of a through pointer p
-    cout << "New value of a: " << a << endl; // Prints 20
+    printf_s("Address of a: %p\n", (void *)&a);           // Prints address of a
+    printf_s("Address of a: %p\n", &a);                   // Prints address of a
+    printf_s("Address of a: %d\n", (void *)&a);           // Prints address of a
+    printf_s("Address of a: %h\n", (void *)&a);           // Prints address of a
+    *p = 20;                                              // Changes value of a through pointer p
+    cout << "New value of a: " << a << endl;              // Prints 20
 
     // dynamically allocating memory using pointers
     int *q = (int *)malloc(5 * sizeof(int)); // Allocates memory for an array of 5 ints on the heap
-    *q = 1;                                  // Assigns value 1 to the first element of the allocated memory
-    *(q + 1) = 2;                            // Assigns value 2 to the second element of the allocated memory
-    *(q + 2) = 3;                            // Assigns value 3 to the third element of the allocated memory
-    *(q + 3) = 4;                            // Assigns value 4 to the fourth element of the allocated memory
-    *(q + 4) = 5;                            // Assigns value 5 to the fifth element of the allocated memory
+
+    *q = 1;       // Assigns value 1 to the first element of the allocated memory
+                  // q+1 points to the second element, q+2 to the third, and so on.
+                  // q+1 = q+ 1 * sizeof(int) in terms of byte address.
+    *(q + 1) = 2; // Assigns value 2 to the second element of the allocated memory
+    *(q + 2) = 3; // Assigns value 3 to the third element of the allocated memory
+    *(q + 3) = 4; // Assigns value 4 to the fourth element of the allocated memory
+    *(q + 4) = 5; // Assigns value 5 to the fifth element of the allocated memory
     cout << "Values in dynamically allocated array: ";
     for (int i = 0; i < 5; i++)
     {
@@ -87,7 +93,7 @@ int main()
     char *p2;
     double *p3;
 
-    cout << "Size of int pointer: " << sizeof(p1) << " bytes" << endl;   // Prints size of int pointer
-    cout << "Size of char pointer: " << sizeof(p2) << " bytes" << endl;  // Prints size of char pointer
+    cout << "Size of int pointer: " << sizeof(p1) << " bytes" << endl;    // Prints size of int pointer
+    cout << "Size of char pointer: " << sizeof(p2) << " bytes" << endl;   // Prints size of char pointer
     cout << "Size of double pointer: " << sizeof(p3) << " bytes" << endl; // Prints size of double pointer
 }
