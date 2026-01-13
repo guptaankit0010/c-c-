@@ -8,3 +8,14 @@
 *.dSYM
 **/bin
 *.exe
+*.o
+*.obj  
+*.class
+*.jar
+*.war
+*.ear
+*.pyc
+__pycache__/
+*.pdb
+*.ilk
+*.lib
