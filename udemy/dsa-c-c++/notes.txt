@@ -40,3 +40,91 @@
 - Always match memory allocation and deallocation methods (malloc/free, new/delete).
 - Use correct format specifiers for printing pointers and values.
 - Member order in structs affects padding and total size.
+
+--- FILE: functions.cpp ---
+Overview
+--------
+This file demonstrates function declarations/overloads, passing by value/pointer/reference, returning a dynamically allocated array, and passing structs by value/pointer/reference. It contains comments explaining stack vs heap and shows many small examples intended for learning.
+
+Key structs
+-----------
+- Rectangle { int length; int breadth; }
+- Uniforms { int code[10]; }
+
+Important functions (signatures & purpose)
+-----------------------------------------
+- int add(int a, int b)
+  Adds two ints by value.
+
+- int add(int *a, int *b)
+  Adds values pointed to by a and b.
+
+- void swap1(int a, int b)
+  Demonstrates pass-by-value swap (does not affect caller).
+
+- int swap2(int *a, int *b)
+  Swaps two ints via pointers. Mutates caller. Returns 0 (could be void).
+
+- int swap3(int &a, int &b)
+  Swaps two ints via references. Mutates caller. Returns 0 (could be void).
+
+- int* newArray(int arr[], int n)
+  Prints the input array then allocates and returns a new int[n] copied from arr. Caller must delete[] the returned pointer.
+
+- void printTest1(int *a)
+  Prints a[0] and a[112]. WARNING: a[112] is likely out-of-bounds and unsafe.
+
+- int area1(Rectangle *r)
+  Returns area using a pointer to Rectangle.
+
+- int area2(Rectangle r)
+  Returns area for Rectangle passed by value (copy).
+
+- int area3(Rectangle &r)
+  Returns area using a reference (no copy).
+
+- int getCodes(Uniforms u)
+  Returns u.code[0] (copies Uniforms array by value).
+
+- int getCodes2(Uniforms *u)
+  Returns u->code[0] using pointer (no copy).
+
+Main highlights
+---------------
+- Shows use of add(int,int) and add(int*,int*).
+- Demonstrates three swapping techniques and their effects on caller variables.
+- Demonstrates array decay to pointer and why sizeof behaves differently inside functions.
+- Uses newArray to allocate on heap and deletes it afterwards.
+- Calls printTest1 which currently triggers undefined behavior due to out-of-bounds access.
+- Demonstrates passing structs by pointer/value/reference and the cost of copying.
+
+Bugs / unsafe code
+------------------
+- printTest1 reads a[112] unconditionally. This is undefined behavior and must be fixed.
+- newArray returns a raw new[] pointer — replace with std::vector<int> or std::unique_ptr<int[]>.
+- swap2/swap3 return int but should be void; returning 0 is unnecessary.
+- getCodes takes Uniforms by value, causing an array copy. Use const Uniforms& if only reading.
+
+Recommendations
+---------------
+- Replace raw pointer returns with std::vector<int> to avoid manual delete[] and improve safety.
+- Add bounds or size parameters when printing array elements: printTest1(const int *a, size_t size).
+- Make swap2 and swap3 return void.
+- Use const references for read-only struct parameters: int getCodes(const Uniforms &u).
+- Compile with -g -O0 for debugging to avoid optimization reordering: g++ -g -O0 -std=c++11 arr_practice.cpp -o a.out
+
+Teaching points
+---------------
+- Pass-by-value copies data; pass-by-pointer and pass-by-reference can mutate the original.
+- Arrays decay to pointers when passed to functions; sizeof loses original array size.
+- Returning heap memory requires clear ownership and deletion unless using RAII types.
+
+Appendix: Minimal safe replacements (illustrative)
+-------------------------------------------------
+- newArray replacement using vector:
+  std::vector<int> makeVector(const int arr[], int n) { return std::vector<int>(arr, arr + n); }
+
+- safer printTest1 signature:
+  void printTest1(const int *a, size_t size) { if (size > 0) cout << a[0]; if (size > 112) cout << a[112]; }
+
+Date: 2026-03-15
