@@ -36,7 +36,323 @@
 - Not pointers: cannot be null, do not require dereferencing.
 - Changing the reference changes the original variable.
 
+
+
+--- ABSTRACT DATA TYPES (ADT) ---
+- An Abstract Data Type (ADT) is characterized by its data representation and the operations allowed on that data.
+- A data type defines:
+  - Representation of Data: How the data is stored in memory.
+  - Operations on Data: The ways in which the data can be manipulated.
+- Example: Integer Data Type:
+  - In C/C++, an integer might take up 2 bytes (16 bits), with:
+    - 1 bit for the sign (allows for positive and negative values).
+    - 15 bits for the actual integer value.
+- List as an ADT:
+  - A list encapsulates:
+    - Data Representation: The format in which elements are stored (array or linked list).
+    - Supported Operations: Adding, removing, and searching for elements.
+- Internals of ADT:
+  - Users do not need to know how elements are represented or how operations are implemented.
+  - They create instances of classes without worrying about the underlying workings.
+- ADTs provide a structured way to define new types while abstracting complexities involved in their manipulation.
+- The user can perform operations on an ADT without needing detailed knowledge of its implementation, fostering better design and modularity in programming.
+- Fundamental data structures like arrays and linked lists are implementations of ADTs.
+
+
+
 --- GENERAL NOTES ---
 - Always match memory allocation and deallocation methods (malloc/free, new/delete).
 - Use correct format specifiers for printing pointers and values.
 - Member order in structs affects padding and total size.
+
+
+
+--- STACK vs. HEAP MEMORY ---
+
+1. The Stack: The Organized Desk
+- Analogy: A small, highly organized desk. You add papers on top and remove from the top.
+- Definition: The Stack is a highly structured region of memory used for static memory allocation.
+- Structure: Operates on a strict Last In, First Out (LIFO) basis.
+- Management: 100% automatic. When a function finishes, all its variables are instantly "popped" off and destroyed.
+- Example:
+    void calculateTotal() {
+        int price = 10;          // 'price' is pushed onto the stack
+        int tax = 2;             // 'tax' is pushed onto the stack
+        int total = price + tax; // 'total' is pushed onto the stack
+    } // The function ends here! price, tax, and total are instantly destroyed.
+- Limitation: The OS gives the Stack a very small, fixed amount of space (often just a few MB).
+  If you exceed it (e.g., huge array or infinite recursion), you get a Stack Overflow.
+
+2. The Heap: The Storage Warehouse
+- Analogy: A massive, empty warehouse. You find an empty spot, store your data, and write down the
+  address (pointer) so you can find it later. You must manually clean up when done.
+- Definition: The Heap is a vast pool of memory used for dynamic memory allocation.
+  Used when you don't know how much memory you need until runtime.
+- Characteristics: Completely unstructured. Data can be placed anywhere there is free space, any size.
+- Management: 100% manual. You must explicitly ask for space and explicitly hand it back.
+- Example:
+    void createList() {
+        int* ptr = (int*)malloc(100 * sizeof(int)); // Allocate 100 ints on the heap
+        // ... use the data ...
+        free(ptr); // MUST manually free this memory!
+    }
+- Risk (Memory Leaks): If you lose the pointer or forget to call free(), that memory is locked forever.
+  The computer thinks you are still using it. Over time, the heap fills up and the program crashes.
+
+3. Stack vs. Heap: Head-to-Head Comparison
+- Speed:
+  - Stack: Extremely fast (just moving a stack pointer).
+  - Heap: Slower (OS has to search for free space).
+- Management:
+  - Stack: Automatic (managed by the CPU).
+  - Heap: Manual (managed by the programmer).
+- Size:
+  - Stack: Small / Fixed (strict limits, easy to overflow).
+  - Heap: Massive / Variable (limited only by physical RAM).
+- Data Lifespan:
+  - Stack: Temporary (dies when the function ends).
+  - Heap: Persistent (lives until you explicitly free() it).
+- Best Used For:
+  - Stack: Local variables, simple math, small arrays, function calls.
+  - Heap: Large arrays, linked lists, trees, objects of unknown size.
+- Major Risk:
+  - Stack: Stack Overflow (too much data at once).
+  - Heap: Memory Leak (forgetting to clean up).
+
+
+
+--- PHYSICAL vs. LOGICAL DATA STRUCTURES ---
+
+The Big Picture: Materials vs. Blueprints
+- Physical Data Structures are the raw materials (bricks, wood, concrete).
+  They dictate exactly how and where things are physically placed in memory.
+- Logical Data Structures are the architectural blueprints (a kitchen, a bedroom, a hallway).
+  The blueprint tells you how you will interact with the space and what the rules are,
+  but you still have to use the raw materials to actually build those rooms.
+
+1. Physical Data Structures (The "How" & "Where")
+- Physical data structures operate at the hardware level.
+- They are entirely concerned with memory management, layout, and allocation.
+- They tell the computer exactly how the 1s and 0s are sitting inside your RAM.
+
+  A. Arrays
+  - What it is: A single, continuous block of memory.
+  - Analogy: Think of an array like an egg carton or a row of lockers in a hallway.
+    Every locker is right next to the other in a straight line, and they are all the exact same size.
+  - How it works in memory: When you create an array of 5 integers, the OS finds a single block
+    of memory big enough to hold all 5 integers side-by-side.
+  - Pros: Because they are continuous, it is extremely fast to jump to a specific item.
+  - Cons: If you need to add a 6th locker and there is a wall in the way, you have to build a
+    brand new, bigger row of lockers and move everything over.
+
+  B. Linked Lists
+  - What it is: A collection of separate, non-continuous memory blocks (called "nodes")
+    that are connected by pointers.
+  - Each node holds the data and the address to the next piece of data.
+
+
+
+--- TIME AND SPACE COMPLEXITY ---
+
+The Big Picture: The Chef Analogy
+- Time Complexity: "If I have to cook for 100 people instead of 1, how much longer will it take?"
+- Space Complexity: "If I have to cook for 100 people, how many extra pots, pans, and counter space will I need?"
+- We don't measure in seconds or megabytes (every computer is different).
+  Instead, we measure how resources scale as input size ('n') grows.
+
+1. Time Complexity (How fast does it run?)
+- Purpose: Estimate how execution time is affected by changes in input size ('n').
+- Measurement (Big O Notation):
+  - Describes the upper limit (worst-case scenario) of how an algorithm's time grows.
+  - Crucial rule: Drop constants. If an algorithm takes 12n + 1 steps, we call it O(n).
+  - We only care about the overarching trend.
+
+  Common Time Complexities:
+
+  A. O(1): Constant Time
+  - The algorithm takes the exact same amount of time, no matter how big the input is.
+  - Example: print(array[0]);
+  - Analogy: Looking up the first name in a phonebook. Doesn't matter if it has 10 or 10,000 pages.
+
+  B. O(log n): Logarithmic Time
+  - The algorithm cuts the remaining work in half with each step.
+  - Example: Binary Search.
+  - Analogy: Finding a word in a dictionary by opening to the middle, deciding which half
+    the word is in, and throwing the other half away. If the dictionary doubles, only ONE extra step.
+
+  C. O(n): Linear Time
+  - Time grows proportionally with input size. Data doubles → time doubles.
+  - Example: A simple loop going through an array.
+  - Analogy: Reading a book. Twice as many pages → twice as long to read.
+  - Code: for (int i = 0; i < n; i++) { print(array[i]); }
+
+  D. O(n^2): Quadratic Time
+  - Time grows exponentially. Data doubles → time takes four times as long. Generally slow.
+  - Example: Nested loops (a loop inside a loop).
+  - Analogy: Handshakes. Everyone in a room shakes hands with every other person.
+    More people → number of handshakes explodes.
+
+2. Space Complexity (How much memory does it use?)
+- Purpose: Analyze how much extra RAM/memory an algorithm requires based on input size.
+- Also measured using Big O notation. Looking at peak memory usage during execution.
+
+  Key Factors:
+  1. Temporary Variables: Simple counters or math variables.
+  2. Data Structures: Creating new arrays, lists, or hash maps.
+  3. Call Stack (Recursion): Every recursive call saves state in memory. Deep recursion uses a lot of space.
+
+  Examples:
+
+  A. O(1) Space (Constant Space)
+  - Fixed amount of extra memory, regardless of input size.
+  - Example: Finding the sum of 1,000,000 numbers. Only need ONE extra variable (int total = 0).
+
+  B. O(n) Space (Linear Space)
+  - Extra memory grows alongside input size.
+  - Example: Making a complete copy of an array of 'n' numbers.
+    n = 100 → 100 slots of extra memory. n = 1,000 → 1,000 slots.
+
+3. Summary & Trade-offs
+- Often you trade Space for Time, or Time for Space.
+  - Need it fast? Use more memory to cache or store pre-calculated results.
+  - Limited memory? Use a slower algorithm that calculates on the fly without saving intermediate steps.
+
+
+
+--- SEGMENTATION FAULT (Stack Overflow) ---
+
+- A segmentation fault (segfault) occurs when a program tries to access memory it is not allowed to.
+- One common cause is allocating a very large array on the stack.
+- Example:
+    int arr1[10000000] = {1, 1}; // causes a segmentation fault
+- Why it happens:
+  - The stack has a limited, fixed size (typically a few MB, set by the OS).
+  - Allocating a large local array (e.g., 10,000,000 ints = ~40 MB) exceeds this limit.
+  - When the stack limit is exceeded, the program crashes with a "stack overflow" or segmentation fault.
+- How to avoid:
+  - Use heap allocation for large arrays: int *arr = (int *)malloc(10000000 * sizeof(int));
+    or in C++: int *arr = new int[10000000];
+  - Always free heap memory when done: free(arr); (C) or delete[] arr; (C++).
+  - Keep local (stack) variables and arrays small.
+- Other common causes of segfaults:
+  - Dereferencing a NULL or uninitialized pointer.
+  - Accessing an array out of bounds.
+  - Writing to read-only memory.
+  - Using memory after it has been freed (dangling pointer).
+
+
+
+--- FUNCTION POINTERS ---
+
+- At its core, a function pointer is a variable that stores the memory address of executable code,
+  rather than storing data.
+- When you compile a C program, everything ends up in memory:
+  - Variables end up in memory (Stack, Heap, or Data segments).
+  - Functions (actual CPU instructions) also end up in memory (in the Code/Text segment).
+- A standard pointer (like int*) points to data. A function pointer points to instructions.
+
+Why use function pointers?
+- You use them when you don't know which function needs to be called until the program is running.
+- They allow you to treat "behaviors" or "actions" as data that can be passed around.
+
+Two main reasons they exist:
+
+1. Callbacks (Plugging in custom logic)
+   - Example: You write a function to download a file and want it to update a progress bar.
+     But the download function shouldn't care how the progress bar is drawn (GUI? Terminal? Web page?).
+   - You pass a function pointer into the download function. It simply says:
+     "I don't know what this pointer does, but I'm going to call it every time I download 1MB."
+
+2. Arrays of Functions (Jump Tables)
+   - Instead of a massive switch statement for a menu (Press 1 for File, 2 for Edit, 3 for View),
+     you create an array of function pointers.
+   - Example: menu[user_input]();
+     If the user types 2, it instantly jumps to the Edit function.
+
+Syntax:
+    #include <stdio.h>
+
+    // 1. A normal function
+    void shout() {
+        printf("HELLO!\n");
+    }
+
+    int main() {
+        // 2. A pointer that matches the function's signature
+        void (*action_ptr)();
+
+        // 3. Point it at the function
+        action_ptr = shout;
+
+        // 4. Use the pointer to trigger the function
+        action_ptr();
+
+        return 0;
+    }
+
+- The declaration void (*action_ptr)(); means:
+  - action_ptr is a pointer to a function that takes no arguments and returns void.
+- To point it at a function: action_ptr = shout; (no parentheses, just the function name).
+- To call it: action_ptr(); (use parentheses to invoke).
+
+
+
+--- C++ std::vector (Dynamic Arrays) ---
+
+- A C++ std::vector is a dynamic array.
+- Think of it as a raw C array wrapped inside an intelligent manager.
+- Unlike a standard C array (fixed size), a vector automatically grows and shrinks
+  as you add or remove elements.
+
+1. The Split Personality of a Vector
+- A vector lives in TWO different places in memory at the same time:
+  A. The Vector Object (The Manager) — on the Stack
+  B. The Data Elements (The Payload) — on the Heap
+
+  A. The Vector Object (The Manager)
+  - When you write std::vector<int> myVec; inside a function, the vector object is created on the Stack.
+  - It is surprisingly tiny: typically exactly 24 bytes on a 64-bit system, regardless of
+    whether it holds zero items or a billion items.
+  - It usually consists of just three internal pointers:
+    1. begin pointer: Points to the first element in the data block.
+    2. end pointer: Points just after the last active element (tracks the size).
+    3. end_of_storage pointer: Points to the very end of allocated memory (tracks the capacity).
+
+  B. The Data Elements (The Payload)
+  - The actual data (ints, doubles, etc.) is allocated on the Heap.
+  - Critical rule: Heap memory is 100% contiguous — all elements sit right next to each other,
+    just like a raw C array.
+  - This is why vectors are incredibly fast for the CPU to read (cache-friendly).
+  - This is why you can instantly access any element using an index: myVec[5].
+
+2. How it Grows: Size vs. Capacity
+- Because heap data must remain contiguous, the vector faces a problem when it runs out of room.
+- The vector tracks two different numbers:
+  - Size: How many elements are actually in the vector right now.
+  - Capacity: How many elements the current memory block can hold before running out of space.
+
+  The Reallocation Process (when Size hits Capacity on push_back):
+  1. Find a new home: Ask the OS for a brand new, larger contiguous block of Heap memory
+     (usually 1.5x or 2x the old capacity, depending on the compiler).
+  2. Move the furniture: Copy or move all existing elements from the old block to the new one.
+  3. Demolish the old home: Delete the old memory block.
+  4. Update the manager: Update the three pointers on the Stack to point to the new Heap location.
+
+  - WARNING: Reallocation is CPU-heavy (new memory, move everything, delete old memory).
+    It can slow down your program if it happens too often.
+
+3. Vector vs. Raw Array: Head-to-Head Comparison
+  - Size:
+    - Raw Array (int arr[5]): Fixed at compile time.
+    - Vector (std::vector<int>): Dynamic (can grow at runtime).
+  - Memory Location:
+    - Raw Array: Can be Stack or Heap.
+    - Vector: Manager on Stack, Data strictly on Heap.
+  - Data Layout:
+    - Raw Array: Contiguous.
+    - Vector: Contiguous.
+  - Memory Management:
+    - Raw Array: Manual (if on Heap).
+    - Vector: Automatic (cleans up its own Heap data when destroyed).
+
+
