@@ -1,4 +1,6 @@
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 using namespace std;
 
 // pointers are variables that store memory addresses.
@@ -20,10 +22,10 @@ int main()
     cout << "Address of a: " << &a << endl;               // Prints address of a
     cout << "Value at pointer p: " << *p << endl;         // Dereferences p to get value of a, prints 10
     cout << "Address stored in pointer p: " << p << endl; // Prints address of a
-    printf_s("Address of a: %p\n", (void *)&a);           // Prints address of a
-    printf_s("Address of a: %p\n", &a);                   // Prints address of a
-    printf_s("Address of a: %d\n", (void *)&a);           // Prints address of a
-    printf_s("Address of a: %h\n", (void *)&a);           // Prints address of a
+    printf("Address of a: %p\n", (void *)&a);           // Prints address of a
+    printf("Address of a: %p\n", (void *)&a);           // Prints address of a
+    printf("Address of a: %p\n", (void *)&a);           // Prints address of a
+    printf("Address of a: %p\n", (void *)&a);           // Prints address of a
     *p = 20;                                              // Changes value of a through pointer p
     cout << "New value of a: " << a << endl;              // Prints 20
 
@@ -74,6 +76,13 @@ int main()
     // The name of the array (arr1) acts as a pointer to the first element of the array.
     // Array name is not a pointer, but it can be used as one in expressions.
     // arr2[0] is equivalent to arr1[0], arr2[1] is equivalent to arr1[1], and so on.
+
+    int pdata = 6;
+    int *tpdata;
+    tpdata = &pdata;                                  // tpdata points to the address of pdata
+    printf("Value of pdata: %d\n", pdata);            // Prints 6
+    printf("Value at pointer tpdata: %d\n", *tpdata); // Dereferences tpdata to get value of pdata, prints 6
+    printf("value of tpdata[0]: %d\n", tpdata[0]);    // Dereferences tpdata to get value of pdata, prints 6
 
     int *arr3 = new int[5]; // Dynamically allocates memory for an array of 5 ints on the heap
     arr3[0] = 10;           // Assigns value 10 to the first element of the dynamically allocated array
