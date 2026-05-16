@@ -99,6 +99,10 @@
 - Risk (Memory Leaks): If you lose the pointer or forget to call free(), that memory is locked forever.
   The computer thinks you are still using it. Over time, the heap fills up and the program crashes.
 
+
+
+
+
 3. Stack vs. Heap: Head-to-Head Comparison
 - Speed:
   - Stack: Extremely fast (just moving a stack pointer).
@@ -395,6 +399,97 @@ Important functions (signatures & purpose)
 - int area2(Rectangle r)
   Returns area for Rectangle passed by value (copy).
 
+
+
+--- PASSING OBJECTS TO REFERENCE PARAMETERS ---
+
+- When a function parameter is declared as a reference (e.g., const string& s),
+  the caller does NOT need any special syntax — just pass the object normally.
+- The compiler automatically handles the reference binding behind the scenes.
+
+How it works step by step:
+  1. In main(), str1 is a normal string object sitting on the stack with a real address (e.g., 0x00F3FC40).
+  2. When you call inspectString("str1", str1), the compiler passes the ADDRESS of str1 to the function.
+  3. Inside inspectString(), s is not a copy — it's an alias backed by a hidden pointer.
+     Every use of s auto-dereferences that pointer to access the original str1.
+  4. &s inside the function gives the address of the ORIGINAL str1, not a local copy.
+
+Example:
+    // What you write:
+    string str1 = "Hello";
+    inspectString("str1", str1);        // no & needed at call site
+
+    // What the compiler generates (conceptually):
+    inspectString("str1", &str1);       // passes address of str1
+
+    // Inside the function:
+    void inspectString(const char* name, const string& s) {
+        s.length();   // compiler generates: (*hidden_ptr).length()
+        &s;           // returns 0x00F3FC40 — address of original str1
+    }
+
+Reference vs Pointer syntax comparison:
+    | Declaration       | Pointer: const string* s      | Reference: const string& s     |
+    | Call site         | inspectString("str1", &str1)  | inspectString("str1", str1)    |
+    | Access inside     | s->length()                   | s.length()                     |
+
+Without the reference (const string s — no &):
+  - The compiler would COPY the entire string object into a new local variable.
+  - For a 1180-char string, that means allocating heap memory for the copy — wasteful.
+
+Key takeaway:
+  - The & in the function signature tells the compiler "bind a reference."
+  - At the call site, you just pass the variable normally — the compiler does the rest.
+  - No copy is made. The function operates directly on the original object.
+
+
+
+--- reinterpret_cast vs C-STYLE CASTS ---
+
+- reinterpret_cast<const char*>(&s) and (const char*)(&s) produce identical results.
+- Both convert a string* address to a char* for byte-level pointer arithmetic.
+
+Why reinterpret_cast is preferred in C++:
+  1. Explicit intent — clearly says "I'm reinterpreting the bit pattern of this pointer."
+     A C-style cast (char*) is ambiguous — the compiler may apply static_cast, const_cast,
+     or reinterpret_cast depending on context.
+  2. Searchable — you can grep for reinterpret_cast to find all "dangerous" casts in a codebase.
+     C-style casts are much harder to search for.
+  3. Safer — reinterpret_cast won't accidentally strip const.
+     A C-style cast like (char*)(&s) would silently drop const, which could lead to bugs.
+     With reinterpret_cast, you'd need a separate const_cast to remove const.
+
+
+
+--- BYTE-LEVEL POINTER ARITHMETIC ---
+
+- In C/C++, pointer arithmetic scales by the size of the pointed-to type:
+    int* p;
+    p + 1;    // moves forward by sizeof(int) = 4 bytes
+
+    string* p;
+    p + 1;    // moves forward by sizeof(string) = 32 or 40 bytes
+
+- To advance by an exact number of bytes, cast to char* (sizeof(char) == 1, guaranteed):
+    reinterpret_cast<const char*>(&s) + sizeof(s);
+
+  Step by step:
+    &s                                     // type: const string*  (address 0x100)
+    reinterpret_cast<const char*>(&s)      // type: const char*    (still 0x100, but now +N = N bytes)
+    + sizeof(s)                            // 0x100 + 40 = 0x128   (end of object)
+
+- Without the cast:
+    const string* p = &s;
+    p + 1;     // 0x100 + sizeof(string) = 0x128 (happens to work for +1, but not general)
+    p + 40;    // 0x100 + 40*sizeof(string) = way too far!
+
+- This technique is used in the isSSO() function to calculate the end address of the string object,
+  then check if s.data() falls within [objStart, objEnd) — i.e., whether the char buffer
+  lives inside the object (SSO) or on the heap.
+
+- You could also use uint8_t* or unsigned char* instead of char* — same result.
+  char* is the conventional choice for byte-level pointer arithmetic.
+
 - int area3(Rectangle &r)
   Returns area using a reference (no copy).
 
@@ -403,6 +498,23 @@ Important functions (signatures & purpose)
 
 - int getCodes2(Uniforms *u)
   Returns u->code[0] using pointer (no copy).
+
+
+--- HEADER: <unistd.h> ---
+- Stands for "Unix Standard". A POSIX (Unix/Linux) header for the OS API.
+- Common functions:
+  - fork()    – create a child process
+  - exec()    – execute a program
+  - read() / write() – low-level I/O
+  - close()   – close a file descriptor
+  - sleep()   – pause execution for seconds
+  - getpid()  – get process ID
+  - chdir()   – change working directory
+  - pipe()    – create an inter-process communication pipe
+- Not available on Windows with MSVC. MinGW provides a partial implementation.
+- For Windows equivalents, use <windows.h> or <io.h>.
+
+
 
 Main highlights
 ---------------
